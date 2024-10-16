@@ -1,0 +1,32 @@
+services:
+
+  postgres-db:
+    image: postgres:16.4
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - ./add_data.sql:/docker-entrypoint-initdb.d/add_data.sql
+    networks:
+      - joined
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 5434:5432
+
+  meltano:
+    build: ./local-meltano
+    image: local-meltano
+    networks:
+      - joined
+    environment:
+      - environment=${environment}
+      - TAP_POSTGRES_HOST=${TAP_POSTGRES_HOST}
+      - TAP_POSTGRES_USER=${TAP_POSTGRES_USER}
+      - TAP_POSTGRES_PASSWORD=${DB_PASSWORD}
+      - TARGET_SNOWFLAKE_ACCOUNT=${TARGET_SNOWFLAKE_ACCOUNT}
+      - TARGET_SNOWFLAKE_PASSWORD=${TARGET_SNOWFLAKE_PASSWORD}
+    command: meltano --log-level=debug elt --state-id=local-postgres-to-snowflake --full-refresh tap-postgres target-snowflake
+
+networks:
+  joined:
+    driver: bridge

@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "meltano-troubleshooting"
+version = "0.1.0"
+description = ""
+authors = [""]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.9.18,<3.11"
+meltano = {version = "3.4.2", extras = ["psycopg2"]}
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.3.0"
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+psycopg2-binary = "^2.9.9"
+pytest = "^7.2.2"
+pytest-postgresql = "^5.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.8.2"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"

@@ -1,0 +1,34 @@
+version: 1
+send_anonymous_usage_stats: false
+ff:
+  plugin_locks_required: true
+
+plugins:
+  extractors:
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    filter_schemas: public,_meltano
+    config:
+      database: postgres
+      default_replication_method: FULL_TABLE
+    select_filter:
+      - public-empty_data
+      - public-int_data
+      - public-mix_data
+      - public-str_data
+
+  loaders:
+  - name: target-snowflake
+    variant: meltanolabs
+    pip_url: meltanolabs-target-snowflake
+    # change config as needed
+    config:
+      database: MELTANO
+      warehouse: MELTANO
+      user: MELTANO
+      role: MELTANO
+      default_target_schema: MELTANO_TS
+
+environments:
+- name: dev
